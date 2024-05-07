@@ -1,24 +1,49 @@
 # Monerorequest
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/monerorequest`. To experiment with that code, run `bin/console` for an interactive prompt.
+ruby gem for encoding and decoding [Monero Payment Request Standard](https://github.com/lukeprofits/Monero_Payment_Request_Standard?tab=readme-ov-file#introduction) requests.
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
-
 Install the gem and add to the application's Gemfile by executing:
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+    $ bundle add monerorequest
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+    $ gem install monerorequest
 
 ## Usage
 
-TODO: Write usage instructions here
+Encode a request:
+```ruby
+require 'monerorequest'
+
+req = {
+  "custom_label" => "[some string here]",
+  "sellers_wallet" => "[monero main address, starts with 4]",
+  "currency" => "USD",
+  "amount" => 420.69,
+  "payment_id" => "[monero payment ID]",
+  "start_date" => "[timestamp in rfc3339 format]",
+  "days_per_billing_cycle" => 30,
+  "number_of_payments" => 12,
+  "change_indicator_url" => "[some url here]"
+}
+enc = Monerorequest::Encoder.new(req)
+enc.encode(VERSION) # currently only version 1 is implemented
+```
+
+Decode a request:
+```ruby
+require 'monerorequest'
+
+req = "monero-request:1:H4sIAAAAAAACAy2QS4vUQBSF/0qondA9XanqJJ3sZjEozGYW4kooKpWbTjmVqnQ9pjuKID7HlStxZiEo4pMBQRAcFPwvCq5c2O0fMD24utxzOR/n3FuItyZoj4o0iWm+k8YjJBqu58CkrqTg3lg
+WrEIFarzvisnEGlOOG5AVaAtSNDuw4m2nYCJsuIkGd7AWtOgHx8GVgwvBedMyxUvYYtafHrz49fT13+8nb+rNnS/nm7ff3v04vb+/fvj8w/WAcQw/3z++dDnai67tbp4cP4ouRP7787M/Z69eJtF+tNycnd/bW9/9+NUN+Ir3jnVgWSmVknrORC8
+UoCKnI6RDWw4XU7OO9y1o71BB8hH6vzFZDYFIlRFe1yTPeVblpB6YDpQC69iSD3P4DZruUtybtGxXcqZS08yrlMeYmMNF1lF+o1FULvzMxwL3C3DikAM/8jSmSpbG9NbWqll1mQtJ6jgJJqFHIe+obDQsLU22NZzn1rOKe9hGwmQ6xskYp1fjWTE
+lBaFjnBUYo9v/ANjVPGWxAQAA"
+dec = Monerorequest::Decoder.new(req)
+dec.decode
+```
 
 ## Development
 
@@ -28,7 +53,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/monerorequest.
+Bug reports and pull requests are welcome on GitHub at https://github.com/snex/monerorequest.
 
 ## License
 
