@@ -1,8 +1,17 @@
 # frozen_string_literal: true
 
+require "base64"
+require "date"
+require "json"
+require "stringio"
+require "uri"
+require "zlib"
+require_relative "monerorequest/decoder"
+require_relative "monerorequest/encoder"
+require_relative "monerorequest/monero_address"
+require_relative "monerorequest/monero_payment_id"
 require_relative "monerorequest/version"
 
 module Monerorequest
-  class Error < StandardError; end
-  # Your code goes here...
+  class RequestVersionError < StandardError; end
 end
