@@ -23,7 +23,7 @@ module Monerorequest
     end
 
     def encode(version)
-      raise RequestVersionError, "Request Versions 1 and 2 are supported." unless [1,2].include?(version.to_i)
+      raise RequestVersionError, "Request Versions 1 and 2 are supported." unless [1, 2].include?(version.to_i)
 
       json_str = @request.sort.to_h.to_json.force_encoding("ascii")
       compressed_data = StringIO.new
@@ -44,12 +44,8 @@ module Monerorequest
       validate_amount!
       validate_payment_id!
       validate_start_date!
-      if @request["version"] == 1 then
-        validate_days_per_billing_cycle!
-      end
-      if @request["version"] == 2 then
-        validate_schedule!
-      end
+      validate_days_per_billing_cycle! if @request["version"] == 1
+      validate_schedule! if @request["version"] == 2
       validate_change_indicator_url!
     end
 
@@ -93,7 +89,9 @@ module Monerorequest
     end
 
     def validate_days_per_billing_cycle!
-      @errors.push("days_per_billing_cycle must be present.") unless @request.key?("days_per_billing_cycle") && @request["version"] == '1'
+      unless @request.key?("days_per_billing_cycle") && @request["version"] == "1"
+        @errors.push("days_per_billing_cycle must be present.")
+      end
       @errors.push("days_per_billing_cycle must be a Integer.") unless @request["days_per_billing_cycle"].is_a?(Integer)
     end
 
