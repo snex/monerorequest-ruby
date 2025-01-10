@@ -23,7 +23,7 @@ module Monerorequest
     end
 
     def encode(version)
-      raise RequestVersionError, "Only Request Version 1 is supported." unless version == 1
+      raise RequestVersionError, "Request Versions 1 and 2 are supported." unless [1, 2].include?(version.to_i)
 
       json_str = @request.sort.to_h.to_json.force_encoding("ascii")
       compressed_data = StringIO.new
@@ -32,7 +32,7 @@ module Monerorequest
       gz.write(json_str)
       gz.close
       encoded_str = Base64.encode64(compressed_data.string).gsub("\n", "")
-      "monero-request:1:#{encoded_str}"
+      "monero-request:#{version}:#{encoded_str}"
     end
 
     private
@@ -44,7 +44,8 @@ module Monerorequest
       validate_amount!
       validate_payment_id!
       validate_start_date!
-      validate_days_per_billing_cycle!
+      validate_days_per_billing_cycle! if @request["version"] == 1
+      validate_schedule! if @request["version"] == 2
       validate_change_indicator_url!
     end
 
@@ -88,7 +89,9 @@ module Monerorequest
     end
 
     def validate_days_per_billing_cycle!
-      @errors.push("days_per_billing_cycle must be present.") unless @request.key?("days_per_billing_cycle")
+      unless @request.key?("days_per_billing_cycle") && @request["version"] == "1"
+        @errors.push("days_per_billing_cycle must be present.")
+      end
       @errors.push("days_per_billing_cycle must be a Integer.") unless @request["days_per_billing_cycle"].is_a?(Integer)
     end
 
@@ -100,6 +103,11 @@ module Monerorequest
       return if @request["change_indicator_url"] =~ URI::DEFAULT_PARSER.make_regexp
 
       @errors.push("change_indicator_url must be a URL.")
+    end
+
+    def validate_schedule!
+      @errors.push("schedule must be present.") unless @request.key?("schedule")
+      @errors.push("schedule must be a valid Cron.") unless Cron.valid?(@request.fetch("schedule", ""))
     end
   end
 end
