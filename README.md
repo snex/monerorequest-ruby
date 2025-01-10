@@ -14,6 +14,8 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
+
+### V1
 Encode a request:
 ```ruby
 require 'monerorequest'
@@ -30,7 +32,7 @@ req = {
   "change_indicator_url" => "[some url here]"
 }
 enc = Monerorequest::Encoder.new(req)
-enc.encode(VERSION) # currently only version 1 is implemented
+enc.encode(1)
 ```
 
 Decode a request:
@@ -41,6 +43,35 @@ req = "monero-request:1:H4sIAAAAAAACAy2QS4vUQBSF/0qondA9XanqJJ3sZjEozGYW4kooKpWb
 WrEIFarzvisnEGlOOG5AVaAtSNDuw4m2nYCJsuIkGd7AWtOgHx8GVgwvBedMyxUvYYtafHrz49fT13+8nb+rNnS/nm7ff3v04vb+/fvj8w/WAcQw/3z++dDnai67tbp4cP4ouRP7787M/Z69eJtF+tNycnd/bW9/9+NUN+Ir3jnVgWSmVknrORC8
 UoCKnI6RDWw4XU7OO9y1o71BB8hH6vzFZDYFIlRFe1yTPeVblpB6YDpQC69iSD3P4DZruUtybtGxXcqZS08yrlMeYmMNF1lF+o1FULvzMxwL3C3DikAM/8jSmSpbG9NbWqll1mQtJ6jgJJqFHIe+obDQsLU22NZzn1rOKe9hGwmQ6xskYp1fjWTE
 lBaFjnBUYo9v/ANjVPGWxAQAA"
+dec = Monerorequest::Decoder.new(req)
+dec.decode
+```
+
+### V2
+Encode a request:
+```ruby
+require 'monerorequest'
+
+req = {
+  "custom_label" => "[some string here]",
+  "sellers_wallet" => "[monero main address, starts with 4]",
+  "currency" => "USD",
+  "amount" => 420.69,
+  "payment_id" => "[monero payment ID]",
+  "start_date" => "[timestamp in rfc3339 format]",
+  "schedule" => '* * 1 * *',
+  "number_of_payments" => 12,
+  "change_indicator_url" => "[some url here]"
+}
+enc = Monerorequest::Encoder.new(req)
+enc.encode(2)
+```
+
+Decode a request:
+```ruby
+require 'monerorequest'
+
+req = "monero-request:2:H4sIAAAAAAACAy2PTW/CMAyG/wrKEVFIE9rS3nbbkcPukZu4JCNNSj6Abtp/X5h2sCw/9vva/iYw++wSGdqm5v2+rXdEanAXFMYpIyH5IHKwZCA6pWU4HIL3Y6XRKHQBjdR7fMK8WDzIkL9IUecQ0Mm1KM7v5z8Qk5+FhRFfNgljKtTlecQg/CQWWGd0KZKB9TvyXwmjyixTHYNpYn0PnerZVHRRalTZYuluN9tNXWL7wmgthigeUHL5hhzfOF19O85Pc7Kt1xfVQk2Zv966hcOnttzc0inVkq43jPIKCPfEa27N6P0awmT1c+libtoILPuG33O/cKMdPgJv4mtlgpCEgvS6hVF2rGhT0fajPg1HNjBe0W6glPz8AihAH5JjAQAA"
 dec = Monerorequest::Decoder.new(req)
 dec.decode
 ```
