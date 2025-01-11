@@ -1,21 +1,33 @@
 # frozen_string_literal: true
 
+require_relative "decoder/v1"
+require_relative "decoder/v2"
+
 module Monerorequest
-  # class to Decode an encoded Monerorequest
+  # class to choose a proper Decoder Version and then pass the encoded data to it for decoding
   class Decoder
     def initialize(request)
       @request = request
+      _, @version, @encoded_str = @request.split(":")
+      @decoder = case @version.to_i
+                 when 1
+                   Decoder::V1
+                 when 2
+                   Decoder::V2
+                 else
+                   raise RequestVersionError, "Unknown version: #{@version}. Only 1 and 2 are supported."
+                 end
     end
 
     def decode
-      _, version, encoded_str = @request.split(":")
-      raise RequestVersionError, "Request Versions 1 and 2 are supported." unless [1, 2].include?(version.to_i)
+      data = @encoded_str
 
-      compressed_data = Base64.decode64(encoded_str)
-      json_str = Zlib::GzipReader.new(StringIO.new(compressed_data)).read
-      decoded_hash = JSON.parse(json_str)
-      decoded_hash["version"] = version.to_i
-      decoded_hash
+      @decoder::PIPELINES.each do |pipeline|
+        data = pipeline.call(data)
+      end
+
+      data["version"] = @version.to_i
+      data
     end
   end
 end
