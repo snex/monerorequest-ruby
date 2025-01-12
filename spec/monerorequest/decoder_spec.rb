@@ -21,12 +21,12 @@ RSpec.describe Monerorequest::Decoder do
     end
 
     context "with an unknown version request" do
-      let(:req) { "monero-request:3:somedata" }
+      let(:req) { "monero-request:invalid:somedata" }
 
       it "raises a RequestVersionError" do
         expect do
           decode
-        end.to raise_error(Monerorequest::RequestVersionError, "Unknown version: 3. Only 1 and 2 are supported.")
+        end.to raise_error(Monerorequest::RequestVersionError, /Unknown version: invalid/)
       end
     end
   end

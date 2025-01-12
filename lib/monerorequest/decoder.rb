@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-require_relative "v1"
-require_relative "v2"
+
+Monerorequest::SUPPORTED_MR_VERSIONS.each do |mr_v|
+  require_relative "v#{mr_v}"
+end
 
 module Monerorequest
   # class to choose a proper Decoder Version and then pass the encoded data to it for decoding
@@ -11,14 +13,11 @@ module Monerorequest
     def initialize(request)
       @request = request
       _, @version, @encoded_str = @request.split(":")
-      @decoder = case @version.to_i
-                 when 1
-                   V1
-                 when 2
-                   V2
-                 else
-                   raise RequestVersionError, "Unknown version: #{@version}. Only 1 and 2 are supported."
-                 end
+      unless Monerorequest::SUPPORTED_MR_VERSIONS.include?(@version.to_i)
+        raise RequestVersionError.new(@version)
+      end
+
+      @decoder = Object.const_get("Monerorequest::V#{@version}")
     end
 
     def decode

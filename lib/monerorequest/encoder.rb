@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "v1"
-require_relative "v2"
+Monerorequest::SUPPORTED_MR_VERSIONS.each do |mr_v|
+  require_relative "v#{mr_v}"
+end
 
 module Monerorequest
   # class to Encode a Monerorequest hash
@@ -9,14 +10,13 @@ module Monerorequest
     attr_reader :errors
 
     def initialize(request, version)
-      unless [1, 2].include?(version.to_i)
-        raise RequestVersionError, "Unknown version: #{version}. Only 1 and 2 are supported."
+      unless Monerorequest::SUPPORTED_MR_VERSIONS.include?(version.to_i)
+        raise RequestVersionError.new(version)
       end
 
       @request = request
       @version = version.to_i
       set_encoder_version
-      @errors = []
       validate!
     end
 
@@ -33,17 +33,11 @@ module Monerorequest
     private
 
     def set_encoder_version
-      @encoder = case @version
-                 when 1
-                   V1
-                 when 2
-                   V2
-                 else
-                   raise RequestVersionError, "Unknown version: #{@version}. Only 1 and 2 are supported."
-                 end
+      @encoder = Object.const_get("Monerorequest::V#{@version}")
     end
 
     def validate!
+      @errors = []
       @encoder::VALIDATORS.each do |validator|
         @errors += validator.validate!(@request)
       end

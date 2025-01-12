@@ -87,7 +87,7 @@ RSpec.describe Monerorequest::Encoder do
     end
 
     context "with an unknown version" do
-      let(:version) { 3 }
+      let(:version) { "invalid" }
       let(:req) do
         {
           "custom_label" => Faker::String.random,
@@ -105,7 +105,7 @@ RSpec.describe Monerorequest::Encoder do
       it "raises an error" do
         expect do
           encode
-        end.to raise_error(Monerorequest::RequestVersionError, "Unknown version: 3. Only 1 and 2 are supported.")
+        end.to raise_error(Monerorequest::RequestVersionError, /Unknown version: invalid/)
       end
     end
   end
