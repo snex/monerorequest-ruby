@@ -77,6 +77,15 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+## Adding a new Monerorequest version
+
+Adding a new Monerorequest version should be simple.
+
+1. Update SUPPORTED_MR_VERSIONS in ```lib/monerorequest.rb```.
+2. Add any necessary pipelines and validators in their respective folders.
+3. Define a file named "vX.rb" where X is your version that pulls in the pipelines and validators it needs.
+4. Make sure you add spec coverage for any new code you write and run ```bundle exec rubocop``` to ensure it passes the linter.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/snex/monerorequest.
