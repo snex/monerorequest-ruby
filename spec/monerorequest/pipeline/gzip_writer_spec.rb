@@ -1,16 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Monerorequest::Pipeline::GzipWriter do
+  # to properly test this, we need to gzip and then gunzip
+  # and compare the original string, because the output data
+  # will vary based on the OS running the code
   describe ".call" do
-    subject(:call) { described_class.call(data) }
+    subject(:call) { Zlib::GzipReader.new(StringIO.new(described_class.call(data))).read }
 
     let(:data) { "hello" }
-    let(:expected) do
-      "\u001F\x8B\b\u0000\u0000\u0000\u0000\u0000" \
-        "\u0002\u0003\xCBH\xCD\xC9\xC9\a\u0000\x86" \
-        "\xA6\u00106\u0005\u0000\u0000\u0000"
-    end
 
-    it { is_expected.to eq(expected) }
+    it { is_expected.to eq(data) }
   end
 end
