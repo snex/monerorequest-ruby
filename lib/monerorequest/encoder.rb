@@ -10,9 +10,7 @@ module Monerorequest
     attr_reader :errors
 
     def initialize(request, version)
-      unless Monerorequest::SUPPORTED_MR_VERSIONS.include?(version.to_i)
-        raise RequestVersionError.new(version)
-      end
+      raise RequestVersionError, version unless Monerorequest::SUPPORTED_MR_VERSIONS.include?(version.to_i)
 
       @request = request
       @version = version.to_i

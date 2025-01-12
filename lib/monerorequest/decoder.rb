@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 Monerorequest::SUPPORTED_MR_VERSIONS.each do |mr_v|
   require_relative "v#{mr_v}"
 end
@@ -13,9 +12,7 @@ module Monerorequest
     def initialize(request)
       @request = request
       _, @version, @encoded_str = @request.split(":")
-      unless Monerorequest::SUPPORTED_MR_VERSIONS.include?(@version.to_i)
-        raise RequestVersionError.new(@version)
-      end
+      raise RequestVersionError, @version unless Monerorequest::SUPPORTED_MR_VERSIONS.include?(@version.to_i)
 
       @decoder = Object.const_get("Monerorequest::V#{@version}")
     end

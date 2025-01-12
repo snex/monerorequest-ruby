@@ -3,15 +3,18 @@
 module Monerorequest
   SUPPORTED_MR_VERSIONS = [1, 2].freeze
 
+  # error raised when an unsupported Monerorequest version is supplied
   class RequestVersionError < StandardError
     def initialize(version)
       @version = version
+      super
     end
 
     def message
       "Unknown version: #{@version}. Allowed versions: #{Monerorequest::SUPPORTED_MR_VERSIONS}"
     end
   end
+
   class InvalidRequestError < StandardError; end
 end
 
