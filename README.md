@@ -31,8 +31,7 @@ req = {
   "number_of_payments" => 12,
   "change_indicator_url" => "[some url here]"
 }
-enc = Monerorequest::Encoder.new(req)
-enc.encode(1)
+enc = Monerorequest::Encoder.new(req, 1)
 ```
 
 Decode a request:
@@ -60,8 +59,7 @@ req = {
   "number_of_payments" => 12,
   "change_indicator_url" => "[some url here]"
 }
-enc = Monerorequest::Encoder.new(req)
-enc.encode(2)
+enc = Monerorequest::Encoder.new(req, 2)
 ```
 
 Decode a request:

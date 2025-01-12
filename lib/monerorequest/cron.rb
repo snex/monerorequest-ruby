@@ -16,19 +16,19 @@ module Monerorequest
     end
 
     def self.valid_minutes?(minutes)
-      minutes.all? { |min| ("0".."59").member?(min) } || minutes == ["*"]
+      minutes.all? { |min| ("0".."59").member?(min.to_s) } || minutes == ["*"]
     end
 
     def self.valid_hours?(hours)
-      hours.all? { |hr| ("0".."23").member?(hr) } || hours == ["*"]
+      hours.all? { |hr| ("0".."23").member?(hr.to_s) } || hours == ["*"]
     end
 
     def self.valid_days?(days)
-      days.all? { |dy| (1..31).member?(dy.to_i) } || days == ["*"]
+      days.all? { |dy| ("1".."31").member?(dy.to_s) } || days == ["*"]
     end
 
     def self.valid_months?(months)
-      months.all? { |mth| (1..12).member?(mth.to_i) || MONTH_CODES.include?(mth.downcase) } || months == ["*"]
+      months.all? { |mth| ("1".."12").member?(mth.to_s) || MONTH_CODES.include?(mth.to_s.downcase) } || months == ["*"]
     end
 
     def self.valid_dow?(dow)
