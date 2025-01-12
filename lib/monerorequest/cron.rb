@@ -28,7 +28,9 @@ module Monerorequest
     end
 
     def self.valid_months?(months)
-      months.all? { |mth| ("1".."12").member?(mth.to_s) || MONTH_CODES.include?(mth.to_s.downcase) } || months == ["*"]
+      months.all? do |mth|
+        ("1".."12").member?(mth.to_s) || MONTH_CODES.include?(mth.to_s.downcase)
+      end || months == ["*"] || months == ["L"]
     end
 
     def self.valid_dow?(dow)

@@ -76,8 +76,14 @@ RSpec.describe Monerorequest::Cron do
       it { is_expected.to be true }
     end
 
-    context "when month *" do
+    context "when month is *" do
       let(:months) { ["*"] }
+
+      it { is_expected.to be true }
+    end
+
+    context "when month is L" do
+      let(:months) { ["L"] }
 
       it { is_expected.to be true }
     end
