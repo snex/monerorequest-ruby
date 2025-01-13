@@ -1,21 +1,43 @@
 # frozen_string_literal: true
 
+Monerorequest::SUPPORTED_MR_VERSIONS.each do |mr_v|
+  require_relative "v#{mr_v}"
+end
+
 module Monerorequest
-  # class to Decode an encoded Monerorequest
+  # class to choose a proper Decoder Version and then pass the encoded data to it for decoding
   class Decoder
+    attr_reader :errors
+
     def initialize(request)
       @request = request
+      _, @version, @encoded_str = @request.split(":")
+      raise RequestVersionError, @version unless Monerorequest::SUPPORTED_MR_VERSIONS.include?(@version.to_i)
+
+      @decoder = Object.const_get("Monerorequest::V#{@version}")
     end
 
     def decode
-      _, version, encoded_str = @request.split(":")
-      raise RequestVersionError, "Request Versions 1 and 2 are supported." unless [1, 2].include?(version.to_i)
+      @data = @encoded_str
 
-      compressed_data = Base64.decode64(encoded_str)
-      json_str = Zlib::GzipReader.new(StringIO.new(compressed_data)).read
-      decoded_hash = JSON.parse(json_str)
-      decoded_hash["version"] = version.to_i
-      decoded_hash
+      @decoder::Decoder::PIPELINES.each do |pipeline|
+        @data = pipeline.call(@data)
+      end
+
+      @data["version"] = @version.to_i
+      validate!
+      @data
+    end
+
+    private
+
+    def validate!
+      @errors = []
+      @decoder::VALIDATORS.each do |validator|
+        @errors += validator.validate!(@data)
+      end
+
+      raise InvalidRequestError, "Invalid request: #{@errors}" unless @errors.empty?
     end
   end
 end

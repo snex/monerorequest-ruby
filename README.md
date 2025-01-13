@@ -31,18 +31,14 @@ req = {
   "number_of_payments" => 12,
   "change_indicator_url" => "[some url here]"
 }
-enc = Monerorequest::Encoder.new(req)
-enc.encode(1)
+enc = Monerorequest::Encoder.new(req, 1)
 ```
 
 Decode a request:
 ```ruby
 require 'monerorequest'
 
-req = "monero-request:1:H4sIAAAAAAACAy2QS4vUQBSF/0qondA9XanqJJ3sZjEozGYW4kooKpWbTjmVqnQ9pjuKID7HlStxZiEo4pMBQRAcFPwvCq5c2O0fMD24utxzOR/n3FuItyZoj4o0iWm+k8YjJBqu58CkrqTg3lg
-WrEIFarzvisnEGlOOG5AVaAtSNDuw4m2nYCJsuIkGd7AWtOgHx8GVgwvBedMyxUvYYtafHrz49fT13+8nb+rNnS/nm7ff3v04vb+/fvj8w/WAcQw/3z++dDnai67tbp4cP4ouRP7787M/Z69eJtF+tNycnd/bW9/9+NUN+Ir3jnVgWSmVknrORC8
-UoCKnI6RDWw4XU7OO9y1o71BB8hH6vzFZDYFIlRFe1yTPeVblpB6YDpQC69iSD3P4DZruUtybtGxXcqZS08yrlMeYmMNF1lF+o1FULvzMxwL3C3DikAM/8jSmSpbG9NbWqll1mQtJ6jgJJqFHIe+obDQsLU22NZzn1rOKe9hGwmQ6xskYp1fjWTE
-lBaFjnBUYo9v/ANjVPGWxAQAA"
+req = "monero-request:1:H4sIAAAAAAACAy2QS4vUQBSF/0qondA9XanqJJ3sZjEozGYW4kooKpWbTjmVqnQ9pjuKID7HlStxZiEo4pMBQRAcFPwvCq5c2O0fMD24utxzOR/n3FuItyZoj4o0iWm+k8YjJBqu58CkrqTg3lgWrEIFarzvisnEGlOOG5AVaAtSNDuw4m2nYCJsuIkGd7AWtOgHx8GVgwvBedMyxUvYYtafHrz49fT13+8nb+rNnS/nm7ff3v04vb+/fvj8w/WAcQw/3z++dDnai67tbp4cP4ouRP7787M/Z69eJtF+tNycnd/bW9/9+NUN+Ir3jnVgWSmVknrORC8UoCKnI6RDWw4XU7OO9y1o71BB8hH6vzFZDYFIlRFe1yTPeVblpB6YDpQC69iSD3P4DZruUtybtGxXcqZS08yrlMeYmMNF1lF+o1FULvzMxwL3C3DikAM/8jSmSpbG9NbWqll1mQtJ6jgJJqFHIe+obDQsLU22NZzn1rOKe9hGwmQ6xskYp1fjWTElBaFjnBUYo9v/ANjVPGWxAQAA"
 dec = Monerorequest::Decoder.new(req)
 dec.decode
 ```
@@ -63,8 +59,7 @@ req = {
   "number_of_payments" => 12,
   "change_indicator_url" => "[some url here]"
 }
-enc = Monerorequest::Encoder.new(req)
-enc.encode(2)
+enc = Monerorequest::Encoder.new(req, 2)
 ```
 
 Decode a request:
@@ -81,6 +76,15 @@ dec.decode
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## Adding a new Monerorequest version
+
+Adding a new Monerorequest version should be simple.
+
+1. Update SUPPORTED_MR_VERSIONS in ```lib/monerorequest.rb```.
+2. Add any necessary pipelines and validators in their respective folders.
+3. Define a file named "vX.rb" where X is your version that pulls in the pipelines and validators it needs.
+4. Make sure you add spec coverage for any new code you write and run ```bundle exec rubocop``` to ensure it passes the linter.
 
 ## Contributing
 
